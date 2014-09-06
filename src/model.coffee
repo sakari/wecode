@@ -6,8 +6,14 @@ define ['lib/Bacon'],
                         @width = '640'
                         @videoId = 'Oh2TNO5CGXQ'
                         @mode = 'stop'
-                        @allowedPlaybackRates = new Bacon.Bus
+                        @events = new Bacon.Bus
                         @playbackRate = 1
+                        @commands = new Bacon.Bus
+                        @events.map('.position').onValue (v) =>
+                                return unless v?
+                                @currentPosition = v
+                seekTo: (position) ->
+                        @commands.push({ seekTo: position })
         class Control
                 constructor: ->
                         @allowedPlaybackRates = []
@@ -26,9 +32,22 @@ define ['lib/Bacon'],
                         @_change.onValue @render.bind(@)
                         @control = new Control
                         @youtube = new Youtube
-                        @youtube.allowedPlaybackRates.onValue (v) =>
+                        @youtube.events.map('.playback-rates').onValue (v) =>
+                                return unless v
                                 @control.allowedPlaybackRates = v
                                 @_trigger()
+
+                        @control.commands.map('.step-back').onValue (v) =>
+                                return unless v?
+                                @youtube.mode = 'pause'
+                                @_trigger()
+                                @youtube.seekTo(@youtube.currentPosition - 0.1)
+
+                        @control.commands.map('.step-forward').onValue (v) =>
+                                return unless v?
+                                @youtube.mode = 'pause'
+                                @_trigger()
+                                @youtube.seekTo(@youtube.currentPosition + 0.1)
 
                         @control.commands.map('.playback-rate').filter((a) -> a).onValue (v) =>
                                 @youtube.playbackRate = v

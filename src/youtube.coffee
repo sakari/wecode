@@ -8,10 +8,19 @@ define ['lib/react', 'jquery'], ({createClass, DOM}, $) ->
 
         idCounter = 0
         createClass
+                _updateTime: ->
+                        @props.events.push({ position: @state.player.getCurrentTime()})
+
                 _onReady: (e) ->
+                        @setState { poll: setInterval(@_updateTime.bind(@), 10) }
+                        @props.commands.map('.seekTo').onValue (v) =>
+                                return unless v?
+                                @state.player.seekTo v, true
+
                         @setState { state : 'ready' }
-                        @props.allowedPlaybackRates.push(
-                                @state.player.getAvailablePlaybackRates())
+                        @props.events.push({
+                                'playback-rates': @state.player.getAvailablePlaybackRates()
+                                })
 
                 _onPlayerStateChange: ->
 
@@ -19,10 +28,13 @@ define ['lib/react', 'jquery'], ({createClass, DOM}, $) ->
                         if state.player && state.state == 'ready'
                                 switch props.mode
                                         when 'stop'
+                                                console.log 'stop', props
                                                 state.player.stopVideo()
                                         when 'play'
+                                                console.log 'play', props
                                                 state.player.playVideo()
                                         when 'pause'
+                                                console.log 'pause', props
                                                 state.player.pauseVideo()
                                 if props.playbackRate
                                         state.player.setPlaybackRate(props.playbackRate)
