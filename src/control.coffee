@@ -1,5 +1,7 @@
-define ['react', 'bootstrap'],
-({createClass, DOM}, bootstrap) ->
+define ['react',
+        'bootstrap',
+        'cs!src/tagger'],
+({createClass, DOM}, {Button, Input}, tagger) ->
         createClass
                 _command: (e) ->
                         this.props.events.push({ mode: e.target.value})
@@ -13,12 +15,13 @@ define ['react', 'bootstrap'],
                 _playbackRateSelector: ->
                         options = for rate in @props.allowedPlaybackRates
                                 DOM.option { value: rate }, rate
-                        DOM.select { value: @props.selectedPlaybackRate, onChange: @_setPlaybackRate }, options
+                        Input { type: 'select', value: @props.selectedPlaybackRate, onChange: @_setPlaybackRate }, options
                 render: ->
                         DOM.div {},
-                                (DOM.input { type: 'button', value: 'play', onClick: @_command }),
-                                (DOM.input { type: 'button', value: 'pause', onClick: @_command }),
-                                (DOM.input { type: 'button', value: 'stop', onClick: @_command }),
+                                (Button { value: 'play', onClick: @_command }, 'play'),
+                                (Button { value: 'pause', onClick: @_command }, 'pause'),
+                                (Button { value: 'stop', onClick: @_command }, 'stop'),
                                 @_playbackRateSelector(),
-                                (DOM.input { type: 'button', value: 'step-back', onClick: @_step}),
-                                (DOM.input { type: 'button', value: 'step-forward', onClick: @_step}),
+                                (Button { value: 'step-back', onClick: @_step}, 'back'),
+                                (Button { value: 'step-forward', onClick: @_step}, 'forward'),
+                                (tagger {})

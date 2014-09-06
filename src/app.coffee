@@ -5,7 +5,7 @@ define ['react',
         'cs!src/youtube',
         'lib/Bacon'],
 ({createClass, renderComponent, DOM},
-timeline
+timeline,
 Model,
 control,
 youtube,
@@ -16,5 +16,6 @@ Bacon) ->
                                 (youtube @props.youtube ),
                                 (control @props.control ),
                                 (timeline @props.timeline )
+
         new Model().render (m) ->
                 renderComponent hello(m), document.getElementById('target')
