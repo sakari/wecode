@@ -41,13 +41,13 @@ define ['lib/Bacon'],
                                 return unless v?
                                 @youtube.mode = 'pause'
                                 @_trigger()
-                                @youtube.seekTo(@youtube.currentPosition - 0.1)
+                                @youtube.seekTo(@youtube.currentPosition - 0.05)
 
                         @control.events.map('.step-forward').onValue (v) =>
                                 return unless v?
                                 @youtube.mode = 'pause'
                                 @_trigger()
-                                @youtube.seekTo(@youtube.currentPosition + 0.1)
+                                @youtube.seekTo(@youtube.currentPosition + 0.05)
 
                         @control.events.map('.playback-rate').filter((a) -> a).onValue (v) =>
                                 @youtube.playbackRate = v
