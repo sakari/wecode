@@ -15,6 +15,7 @@ define ['lib/react', 'jquery'], ({createClass, DOM}, $) ->
                         @setState { poll: setInterval(@_updateTime.bind(@), 10) }
                         @props.commands.map('.seekTo').onValue (v) =>
                                 return unless v?
+                                console.log 'seekto', v
                                 @state.player.seekTo v, true
 
                         @setState { state : 'ready' }
@@ -26,17 +27,18 @@ define ['lib/react', 'jquery'], ({createClass, DOM}, $) ->
 
                 shouldComponentUpdate: (props, state) ->
                         if state.player && state.state == 'ready'
-                                switch props.mode
-                                        when 'stop'
-                                                console.log 'stop', props
-                                                state.player.stopVideo()
-                                        when 'play'
-                                                console.log 'play', props
-                                                state.player.playVideo()
-                                        when 'pause'
-                                                console.log 'pause', props
-                                                state.player.pauseVideo()
-                                if props.playbackRate
+                                if props.mode != @props.mode
+                                        switch props.mode
+                                                when 'stop'
+                                                        console.log 'stop', props
+                                                        state.player.stopVideo()
+                                                when 'play'
+                                                        console.log 'play', props
+                                                        state.player.playVideo()
+                                                when 'pause'
+                                                        console.log 'pause', props
+                                                        state.player.pauseVideo()
+                                if props.playbackRate != @props.playbackRate
                                         state.player.setPlaybackRate(props.playbackRate)
                         false
 
