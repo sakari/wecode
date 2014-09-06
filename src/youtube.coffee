@@ -9,8 +9,10 @@ define ['lib/react', 'jquery'], ({createClass, DOM}, $) ->
         idCounter = 0
         createClass
                 _onReady: (e) ->
-                        console.log 'on ready'
                         @setState { state : 'ready' }
+                        @props.allowedPlaybackRates.push(
+                                @state.player.getAvailablePlaybackRates())
+
                 _onPlayerStateChange: ->
 
                 shouldComponentUpdate: (props, state) ->
@@ -22,6 +24,8 @@ define ['lib/react', 'jquery'], ({createClass, DOM}, $) ->
                                                 state.player.playVideo()
                                         when 'pause'
                                                 state.player.pauseVideo()
+                                if props.playbackRate
+                                        state.player.setPlaybackRate(props.playbackRate)
                         false
 
                 componentDidMount: ->
