@@ -14,16 +14,19 @@ define ['lib/react', 'jquery'], ({createClass, DOM}, $) ->
                 _onPlayerStateChange: ->
 
                 shouldComponentUpdate: (props, state) ->
-                        if props.play && state.state == 'ready' && state.player
-                                state.player.playVideo()
-                        if !props.play && state.state == 'ready' && state.player
-                                state.player.pauseVideo()
+                        if state.player && state.state == 'ready'
+                                switch props.mode
+                                        when 'stop'
+                                                state.player.stopVideo()
+                                        when 'play'
+                                                state.player.playVideo()
+                                        when 'pause'
+                                                state.player.pauseVideo()
                         false
 
                 componentDidMount: ->
                         dfd.done (YT) =>
                                 @_YT = YT
-                                console.log 'youtube loaded'
                                 @setState
                                         player: new YT.Player @state.node,
                                                 height: @props.height
