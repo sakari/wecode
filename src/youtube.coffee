@@ -1,4 +1,4 @@
-define ['lib/react', 'jquery'], ({createClass, DOM}, $) ->
+define ['react', 'jquery'], ({createClass, DOM}, $) ->
         dfd = $.Deferred()
         window.onYouTubeIframeAPIReady = () ->
                 dfd.resolve YT

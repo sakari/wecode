@@ -3,7 +3,14 @@ require.config({
     paths: {
         jquery: 'lib/jquery',
         'coffee-script': 'lib/coffee-script',
-        'cs': 'lib/cs'
+        'cs': 'lib/cs',
+        'bootstrap': 'lib/react-bootstrap/react-bootstrap',
+        'react': 'lib/react'
+    },
+    shims: {
+        bootstrap: {
+            deps: ['jquery']
+        }
     }
 });
 

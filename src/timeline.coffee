@@ -1,6 +1,6 @@
 define ['lib/vis/vis',
         'jquery',
-        'lib/react'],
+        'react'],
 (vis, $, {createClass, DOM}) ->
         createClass
                 shouldComponentUpdate: (props, state) ->

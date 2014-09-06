@@ -1,4 +1,5 @@
-define ['lib/react'], ({createClass, DOM}) ->
+define ['react', 'bootstrap'],
+({createClass, DOM}, bootstrap) ->
         createClass
                 _command: (e) ->
                         this.props.events.push({ mode: e.target.value})

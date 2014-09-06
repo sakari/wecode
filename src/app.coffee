@@ -1,4 +1,4 @@
-define ['lib/react',
+define ['react',
         'cs!src/timeline',
         'cs!src/model',
         'cs!src/control',
