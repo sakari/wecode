@@ -18,7 +18,7 @@ define ['lib/Bacon'],
                 constructor: ->
                         @allowedPlaybackRates = []
                         @selectedPlaybackRate =  1
-                        @commands = new Bacon.Bus
+                        @events = new Bacon.Bus
 
         class Model
                 _trigger: ->
@@ -37,24 +37,24 @@ define ['lib/Bacon'],
                                 @control.allowedPlaybackRates = v
                                 @_trigger()
 
-                        @control.commands.map('.step-back').onValue (v) =>
+                        @control.events.map('.step-back').onValue (v) =>
                                 return unless v?
                                 @youtube.mode = 'pause'
                                 @_trigger()
                                 @youtube.seekTo(@youtube.currentPosition - 0.1)
 
-                        @control.commands.map('.step-forward').onValue (v) =>
+                        @control.events.map('.step-forward').onValue (v) =>
                                 return unless v?
                                 @youtube.mode = 'pause'
                                 @_trigger()
                                 @youtube.seekTo(@youtube.currentPosition + 0.1)
 
-                        @control.commands.map('.playback-rate').filter((a) -> a).onValue (v) =>
+                        @control.events.map('.playback-rate').filter((a) -> a).onValue (v) =>
                                 @youtube.playbackRate = v
                                 @control.selectedPlaybackRate = v
                                 @_trigger()
 
-                        @control.commands.map('.mode').filter((a) -> a).onValue (v) =>
+                        @control.events.map('.mode').filter((a) -> a).onValue (v) =>
                                 @youtube.mode = v
                                 @_trigger()
 

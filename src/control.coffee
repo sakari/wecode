@@ -1,13 +1,13 @@
 define ['lib/react'], ({createClass, DOM}) ->
         createClass
                 _command: (e) ->
-                        this.props.commands.push({ mode: e.target.value})
+                        this.props.events.push({ mode: e.target.value})
                 _step: (e) ->
                         d = {}
                         d[e.target.value] = true
-                        this.props.commands.push d
+                        this.props.events.push d
                 _setPlaybackRate: (e) ->
-                        this.props.commands.push({ 'playback-rate': e.target.value })
+                        this.props.events.push({ 'playback-rate': e.target.value })
 
                 _playbackRateSelector: ->
                         options = for rate in @props.allowedPlaybackRates
