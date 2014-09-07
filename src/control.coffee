@@ -6,11 +6,13 @@ define ['react',
                 _command: (e) ->
                         this.props.events.push({ mode: e.target.value})
                 _step: (e) ->
-                        d = {}
-                        d[e.target.value] = true
-                        this.props.events.push d
+                        d = if e.target.value == 'step-back'
+                                -0.05
+                        else
+                                0.05
+                        @props.events.push { step: d }
                 _setPlaybackRate: (e) ->
-                        this.props.events.push({ 'playback-rate': e.target.value })
+                        @props.events.push({ 'playback-rate': e.target.value })
 
                 _playbackRateSelector: ->
                         options = for rate in @props.allowedPlaybackRates

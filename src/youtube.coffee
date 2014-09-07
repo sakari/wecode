@@ -38,6 +38,10 @@ define ['react', 'jquery'], ({createClass, DOM}, $) ->
                                                 when 'pause'
                                                         console.log 'pause', props
                                                         state.player.pauseVideo()
+                                                when 'interrupted'
+                                                        console.log 'interrupted', props
+                                                        state.player.pauseVideo()
+
                                 if props.playbackRate != @props.playbackRate
                                         state.player.setPlaybackRate(props.playbackRate)
                         false

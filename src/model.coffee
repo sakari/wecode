@@ -10,9 +10,9 @@ define ['lib/Bacon',
                 constructor: ->
                         @tags = new vis.DataSet([])
 
-                addTag: (tag, time) ->
-                        console.log 'adding tag', tag, time
-                        @tags.add [{ id: @_tagId(), content: tag, start: time.zero(time * 1000) }]
+                addTag: (tag, at) ->
+                        console.log 'adding tag', tag, at
+                        @tags.add [{ id: @_tagId(), content: tag, start: time.zero(at * 1000) }]
 
                 _tagId: ->
                         chars = 'abcdef1234567890'
@@ -74,25 +74,29 @@ define ['lib/Bacon',
                                 @control.allowedPlaybackRates = v
                                 @_trigger()
 
-                        @control.events.map('.step-back').onValue (v) =>
+                        @control.events.map('.step').onValue (v) =>
                                 return unless v?
                                 @youtube.mode = 'pause'
                                 @_trigger()
-                                @youtube.seekTo(@youtube.currentPosition - 0.05)
-
-                        @control.events.map('.step-forward').onValue (v) =>
-                                return unless v?
-                                @youtube.mode = 'pause'
-                                @_trigger()
-                                @youtube.seekTo(@youtube.currentPosition + 0.05)
+                                @youtube.seekTo(@youtube.currentPosition + v)
 
                         @control.events.map('.playback-rate').filter((a) -> a).onValue (v) =>
                                 @youtube.playbackRate = v
                                 @control.selectedPlaybackRate = v
                                 @_trigger()
 
-                        @control.events.map('.mode').filter((a) -> a).onValue (v) =>
+                        @control.events.map('.mode').onValue (v) =>
+                                return unless v?
                                 @youtube.mode = v
                                 @_trigger()
+
+                        @control.events.map('.tagging').onValue (v) =>
+                                return unless v?
+                                mode = @youtube.mode
+                                if v == false && @youtube.mode == 'interrupted'
+                                        @youtube.mode = 'play'
+                                if v == true && @youtube.mode == 'play'
+                                        @youtube.mode = 'interrupted'
+                                @_trigger() unless mode == @youtube.mode
 
         Model
