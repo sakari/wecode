@@ -1,9 +1,25 @@
-define ['lib/Bacon'],
-(Bacon) ->
+define ['lib/Bacon',
+        'lib/vis/vis'],
+(Bacon, vis) ->
         class Timeline
-                constructor: ->
+                constructor: ({@tags}) ->
                         @events = new Bacon.Bus
                         @position = 0
+        class Tags
+                constructor: ->
+                        @tags = new vis.DataSet([])
+
+                addTag: (tag, time) ->
+                        console.log 'adding tag', tag, time
+                        @tags.add [{ id: @_tagId(), content: tag, start: @_zerotime(time * 1000) }]
+
+                _zerotime: (time) ->
+                        time - 2 * 1000 * 60 * 60
+
+                _tagId: ->
+                        chars = 'abcdef1234567890'
+                        ([0..20].map -> chars[Math.floor(Math.random() * chars.length)]).join('')
+
         class Youtube
                 constructor: ->
                         @height =  '390'
@@ -36,7 +52,13 @@ define ['lib/Bacon'],
                         @_change.onValue @render.bind(@)
                         @control = new Control
                         @youtube = new Youtube
-                        @timeline = new Timeline
+                        @tags = new Tags
+                        @timeline = new Timeline tags: @tags
+
+                        @control.events.map('.tag').onValue (v) =>
+                                return unless v
+                                @tags.addTag v, @youtube.currentPosition
+                                @_trigger()
 
                         @youtube.events.map('.position').onValue (v) =>
                                 return unless v?

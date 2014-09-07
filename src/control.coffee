@@ -24,4 +24,4 @@ define ['react',
                                 @_playbackRateSelector(),
                                 (Button { value: 'step-back', onClick: @_step}, 'back'),
                                 (Button { value: 'step-forward', onClick: @_step}, 'forward'),
-                                (tagger {})
+                                (tagger { events: @props.events } )

@@ -6,9 +6,7 @@ define ['lib/vis/vis',
                 shouldComponentUpdate: (props, state) ->
                         unless props.position == @props.position
                                 unless state.dragging
-                                        @_preventDragEvent = true
-                                        state.timeline.moveTo(@_zerotime(props.position * 1000), { animate: false })
-                                        @_preventDragEvent = false
+                                        @_moveTimeline(state.timeline, @_zerotime(props.position * 1000))
                                 @state.timeline.setCurrentTime(@_zerotime(props.position * 1000))
                         false
 
@@ -19,22 +17,28 @@ define ['lib/vis/vis',
                         time + 2 * 1000 * 60 * 60
 
                 getInitialState: ->
-                        items = new vis.DataSet([
-                                {id: 1, content: 'item 1', start: @_zerotime(10)},
-                                {id: 3, content: 'item 3', start: @_zerotime(1000)}
-                                ])
                         opts =
                                 showCurrentTime: true
                                 zoomMax: 10 * 60 * 1000
                                 zoomMin: 1000
                                 showMajorLabels: false
                         node = $('<div>')
-                        timeline = new vis.Timeline(node[0], items, opts)
+                        timeline = new vis.Timeline(node[0], @props.tags.tags, opts)
                         timeline.on 'rangechanged', @_onDragEnd
                         timeline.on 'rangechange', @_onDrag
+                        pos = @_zerotime(@props.position * 1000)
+
+                        @_moveTimeline(timeline, pos)
+                        timeline.setCurrentTime(pos)
+
                         dragging: false
                         node: node
                         timeline: timeline
+
+                _moveTimeline: (timeline, pos) ->
+                        @_preventDragEvent = true
+                        timeline.moveTo(pos, { animate: false })
+                        @_preventDragEvent = false
 
                 _onDragEnd: ({start, end}) ->
                         unless @_preventDragEvent
