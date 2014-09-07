@@ -1,6 +1,7 @@
 define ['lib/Bacon',
-        'lib/vis/vis'],
-(Bacon, vis) ->
+        'lib/vis/vis',
+        'cs!src/time'],
+(Bacon, vis, time) ->
         class Timeline
                 constructor: ({@tags}) ->
                         @events = new Bacon.Bus
@@ -11,10 +12,7 @@ define ['lib/Bacon',
 
                 addTag: (tag, time) ->
                         console.log 'adding tag', tag, time
-                        @tags.add [{ id: @_tagId(), content: tag, start: @_zerotime(time * 1000) }]
-
-                _zerotime: (time) ->
-                        time - 2 * 1000 * 60 * 60
+                        @tags.add [{ id: @_tagId(), content: tag, start: time.zero(time * 1000) }]
 
                 _tagId: ->
                         chars = 'abcdef1234567890'

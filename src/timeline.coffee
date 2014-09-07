@@ -1,20 +1,16 @@
 define ['lib/vis/vis',
         'jquery',
-        'react'],
-(vis, $, {createClass, DOM}) ->
+        'react',
+        'cs!src/time'],
+(vis, $, {createClass, DOM}, time) ->
         createClass
                 shouldComponentUpdate: (props, state) ->
                         unless props.position == @props.position
+                                pos = time.zero(props.position * 1000)
                                 unless state.dragging
-                                        @_moveTimeline(state.timeline, @_zerotime(props.position * 1000))
-                                @state.timeline.setCurrentTime(@_zerotime(props.position * 1000))
+                                        @_moveTimeline(state.timeline, pos)
+                                @state.timeline.setCurrentTime(pos)
                         false
-
-                _zerotime: (time) ->
-                        time - 2 * 1000 * 60 * 60
-
-                _unzerotime: (time) ->
-                        time + 2 * 1000 * 60 * 60
 
                 getInitialState: ->
                         opts =
@@ -26,7 +22,7 @@ define ['lib/vis/vis',
                         timeline = new vis.Timeline(node[0], @props.tags.tags, opts)
                         timeline.on 'rangechanged', @_onDragEnd
                         timeline.on 'rangechange', @_onDrag
-                        pos = @_zerotime(@props.position * 1000)
+                        pos = time.zero(@props.position * 1000)
 
                         @_moveTimeline(timeline, pos)
                         timeline.setCurrentTime(pos)
@@ -44,7 +40,7 @@ define ['lib/vis/vis',
                         unless @_preventDragEvent
                                 at = (end.getTime() + start.getTime()) / 2
                                 @state.timeline.setCurrentTime(at)
-                                @props.events.push { 'timeScroll' : @_unzerotime(at) }
+                                @props.events.push { 'timeScroll' : time.unzero(at) }
                                 @setState { dragging: false}
 
                 _onDrag: ({start, end}) ->
@@ -52,7 +48,7 @@ define ['lib/vis/vis',
                                 @setState { dragging: true}
                                 at = (end.getTime() + start.getTime()) / 2
                                 @state.timeline.setCurrentTime(at)
-                                @props.events.push { 'timeScroll' : @_unzerotime(at) }
+                                @props.events.push { 'timeScroll' : time.unzero(at) }
 
                 componentDidMount: ->
                         $(@getDOMNode()).append(@state.node)
