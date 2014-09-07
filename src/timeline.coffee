@@ -18,6 +18,12 @@ define ['lib/vis/vis',
                                 zoomMax: 10 * 60 * 1000
                                 zoomMin: 1000
                                 showMajorLabels: false
+                                editable:
+                                        add: false
+                                        updateTime: true
+                                        updateGroup: true
+                                        remove: true
+                                selectable: true
                         node = $('<div>')
                         timeline = new vis.Timeline(node[0], @props.tags.tags, opts)
                         timeline.on 'rangechanged', @_onDragEnd
