@@ -1,8 +1,9 @@
 define ['lib/vis/vis',
         'jquery',
         'react',
+        'cs!src/tageditor',
         'cs!src/time'],
-(vis, $, {createClass, DOM}, time) ->
+(vis, $, {createClass, DOM}, tageditor, time) ->
         createClass
                 shouldComponentUpdate: (props, state) ->
                         unless props.position == @props.position
@@ -10,7 +11,7 @@ define ['lib/vis/vis',
                                 unless state.dragging
                                         @_moveTimeline(state.timeline, pos)
                                 @state.timeline.setCurrentTime(pos)
-                        false
+                        @state.item != state.item
 
                 getInitialState: ->
                         opts =
@@ -18,11 +19,12 @@ define ['lib/vis/vis',
                                 zoomMax: 10 * 60 * 1000
                                 zoomMin: 1000
                                 showMajorLabels: false
-                                editable:
-                                        add: false
-                                        updateTime: true
-                                        updateGroup: true
-                                        remove: true
+                                editable: true
+                                onAdd: ->
+                                onUpdate: (item, cb) =>
+                                        @setState item: item, cb: (i) =>
+                                                @setState item: null, cb: null
+                                                cb(i)
                                 selectable: true
                         node = $('<div>')
                         timeline = new vis.Timeline(node[0], @props.tags.tags, opts)
@@ -33,6 +35,8 @@ define ['lib/vis/vis',
                         @_moveTimeline(timeline, pos)
                         timeline.setCurrentTime(pos)
 
+                        item: null
+                        cb: null
                         dragging: false
                         node: node
                         timeline: timeline
@@ -60,4 +64,5 @@ define ['lib/vis/vis',
                         $(@getDOMNode()).append(@state.node)
 
                 render: ->
-                        DOM.div {}
+                        (DOM.div {},
+                                (tageditor { ref: 'tageditor', events: @props.events, item: @state.item, cb: @state.cb }))
