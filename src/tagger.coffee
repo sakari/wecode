@@ -1,6 +1,6 @@
 define ['react', 'bootstrap'],
 ({createClass, DOM},
-{Button, Modal, OverlayMixin, Input}) ->
+{Button, Modal, OverlayMixin, Input, ButtonGroup}) ->
         createClass
                 mixins: [OverlayMixin]
                 getInitialState: ->
@@ -10,7 +10,7 @@ define ['react', 'bootstrap'],
                         @setState isModalOpen: !@state.isModalOpen
 
                 render: ->
-                        Button { onClick: @handleToggle, bsStyle: "primary" }, 'Tag'
+                        Button { onClick: @handleToggle, bsStyle: "primary", className: 'glyphicon glyphicon-tag' }
 
                 _submitTag: (e) ->
                         @props.events.push { tag: @state.tag } if @state.tag
@@ -35,10 +35,11 @@ define ['react', 'bootstrap'],
                         @props.events.push tagging: true
                         (Modal {  onRequestHide: @handleToggle },
                                 (DOM.div { className: 'modal-body'},
-                                        (Button { value: 'step-back', onClick: @_step}, '< 1s'),
-                                        (Button { value: 'step-forward', onClick: @_step }, '> 1s'),
+                                        (ButtonGroup {},
+                                                (Button { value: 'step-back', onClick: @_step, className: 'glyphicon glyphicon-step-backward'}),
+                                                (Button { value: 'step-forward', onClick: @_step, className: 'glyphicon glyphicon-step-forward' })),
                                         (DOM.form { onSubmit: @_submitTag },
-                                                (Input { type: 'text', placeholder: 'tag', onChange: @_inputTag}))),
+                                                (Input { type: 'text', placeholder: 'enter tag', onChange: @_inputTag}))),
                                 (DOM.div { className: 'modal-footer'},
                                         (Button { onClick: @handleToggle }, 'Close'))
                         )

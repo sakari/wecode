@@ -1,7 +1,7 @@
 define ['react',
         'bootstrap',
         'cs!src/tagger'],
-({createClass, DOM}, {Button, Input}, tagger) ->
+({createClass, DOM}, {Button, Input, ButtonGroup, DropdownButton, MenuItem}, tagger) ->
         createClass
                 _command: (e) ->
                         this.props.events.push({ mode: e.target.value})
@@ -11,19 +11,21 @@ define ['react',
                         else
                                 0.05
                         @props.events.push { step: d }
+
                 _setPlaybackRate: (e) ->
-                        @props.events.push({ 'playback-rate': e.target.value })
+                        @props.events.push({ 'playback-rate': e.target.text})
 
                 _playbackRateSelector: ->
                         options = for rate in @props.allowedPlaybackRates
-                                DOM.option { value: rate }, rate
-                        Input { type: 'select', value: @props.selectedPlaybackRate, onChange: @_setPlaybackRate }, options
+                                MenuItem { value: rate, onClick: @_setPlaybackRate }, rate
+                        DropdownButton { title: @props.selectedPlaybackRate, className: 'glyphicon glyphicon-time', onClick: @_setPlaybackRate }, options
+
                 render: ->
-                        DOM.div {},
-                                (Button { value: 'play', onClick: @_command }, 'play'),
-                                (Button { value: 'pause', onClick: @_command }, 'pause'),
-                                (Button { value: 'stop', onClick: @_command }, 'stop'),
-                                @_playbackRateSelector(),
-                                (Button { value: 'step-back', onClick: @_step}, 'back'),
-                                (Button { value: 'step-forward', onClick: @_step}, 'forward'),
-                                (tagger { events: @props.events } )
+                        ButtonGroup {},
+                                (Button { value: 'play', onClick: @_command, className: 'glyphicon glyphicon-play'}),
+                                (Button { value: 'pause', onClick: @_command, className: 'glyphicon glyphicon-pause'}),
+                                (Button { value: 'stop', onClick: @_command, className: 'glyphicon glyphicon-stop'}),
+                                (Button { value: 'step-back', onClick: @_step, className: 'glyphicon glyphicon-step-backward'}),
+                                (Button { value: 'step-forward', onClick: @_step, className: 'glyphicon glyphicon-step-forward'}),
+                                (tagger { events: @props.events } ),
+                                @_playbackRateSelector()
