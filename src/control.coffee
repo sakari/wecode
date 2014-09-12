@@ -1,7 +1,8 @@
 define ['react',
         'bootstrap',
-        'cs!src/tagger'],
-({createClass, DOM}, {Button, Input, ButtonGroup, DropdownButton, MenuItem}, tagger) ->
+        'cs!src/tagger',
+        'cs!src/loader'],
+({createClass, DOM}, {Button, Input, ButtonGroup, DropdownButton, MenuItem}, tagger, loader) ->
         createClass
                 _command: (e) ->
                         this.props.events.push({ mode: e.target.value})
@@ -22,6 +23,7 @@ define ['react',
 
                 render: ->
                         ButtonGroup {},
+                                (loader { events: @props.events }),
                                 (Button { value: 'play', onClick: @_command, className: 'glyphicon glyphicon-play'}),
                                 (Button { value: 'pause', onClick: @_command, className: 'glyphicon glyphicon-pause'}),
                                 (Button { value: 'stop', onClick: @_command, className: 'glyphicon glyphicon-stop'}),

@@ -20,9 +20,8 @@ define ['lib/Bacon',
 
         class Youtube
                 constructor: ->
-                        @height =  '390'
-                        @width = '640'
-                        @videoId = 'Oh2TNO5CGXQ'
+                        @height =  390
+                        @width = 640
                         @mode = 'stop'
                         @events = new Bacon.Bus
                         @playbackRate = 1
@@ -53,9 +52,19 @@ define ['lib/Bacon',
                         @tags = new Tags
                         @timeline = new Timeline tags: @tags
 
+                        @control.events.map('.open').onValue (v) =>
+                                return unless v
+                                @youtube.videoId = v
+                                @_trigger()
+
                         @control.events.map('.tag').onValue (v) =>
                                 return unless v
                                 @tags.addTag v, @youtube.currentPosition
+                                @_trigger()
+
+                        @youtube.events.map('.playerReady').onValue (v) =>
+                                return unless v?
+                                @youtube.mode = 'stop'
                                 @_trigger()
 
                         @youtube.events.map('.position').onValue (v) =>
